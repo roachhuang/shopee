@@ -77,3 +77,14 @@ timers. Re-run it if the repo moves.
 
 User timers only run while you're logged in. To keep boosting after logout
 or before login following a reboot, run `loginctl enable-linger "$USER"`.
+
+
+1. uv venv
+Creates a virtual environment in .venv/ in the current folder. It uses whatever Python it finds, or you can choose one:
+uv venv --python 3.12
+If that version isn’t installed, uv downloads it for you.
+
+2. uv pip install <pkg>
+Installs a package into that .venv. It’s the same as pip install, only faster. uv finds .venv automatically, so you don’t need to activate it first. For example:
+uv pip install requests
+uv pip install -r requirements.txt
