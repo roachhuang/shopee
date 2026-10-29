@@ -9,6 +9,8 @@ Single-script Playwright automation that logs into the Shopee Taiwan seller port
 ## Commands
 
 ```
+uv sync                                   # create/update .venv from pyproject.toml + uv.lock
+.venv/bin/playwright install --with-deps chromium   # first time only
 source .venv/bin/activate
 python auto_login.py
 ```

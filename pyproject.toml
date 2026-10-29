@@ -1,0 +1,9 @@
+[project]
+name = "shopee"
+version = "0.1.0"
+description = "Playwright automation that boosts Shopee TW seller listings"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "playwright>=1.64.1",
+]
