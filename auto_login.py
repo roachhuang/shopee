@@ -66,12 +66,14 @@ def do_login(page, email: str, password: str) -> bool:
     except PWTimeout:
         pass
 
-    username = page.get_by_role("textbox", name=re.compile("Phone|Email|電話號碼"))
-    password_box = page.get_by_role("textbox", name=re.compile("Password|密碼"))
+    # Target inputs by their name attribute: the accessible names come from
+    # lowercase, language-dependent aria-labels ("Input password", ...).
+    username = page.locator("input[name='loginKey']")
+    password_box = page.locator("input[name='password']")
     username.wait_for(timeout=15000)
     username.fill(email)
     password_box.fill(password)
-    page.get_by_role("button", name=re.compile("^Log ?[Ii]n$|^登入$")).click()
+    page.get_by_role("button", name=re.compile(r"^log ?in$|^登入$", re.IGNORECASE)).click()
 
     print("\nCredentials submitted.")
     if not sys.stdin.isatty():

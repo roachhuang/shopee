@@ -78,6 +78,27 @@ timers. Re-run it if the repo moves.
 User timers only run while you're logged in. To keep boosting after logout
 or before login following a reboot, run `loginctl enable-linger "$USER"`.
 
+## Why a systemd timer (not Claude `/loop`, `/schedule`, or cron)
+
+- **Claude Code `/loop`** -- only runs while a Claude Code session stays
+  open, and every iteration spends tokens. Not suitable for an unattended
+  job that runs indefinitely.
+- **Claude Code `/schedule`** -- runs in Anthropic's cloud, which has none
+  of the local state this job needs: `.venv`, `.env`, and especially
+  `storage_state.json` (the saved login session). It would also spend
+  tokens on every run.
+- **cron** -- would work, but the repo already ships systemd units, and a
+  timer fits this job better:
+  - `OnUnitActiveSec=4h5m` measures from the *last run*, not wall-clock
+    times, so a slow run never pushes the next one closer than 4h5m (the
+    extra 5 minutes is a safety margin past the boost cooldown). After a
+    reboot, `OnBootSec=5min` starts a run 5 minutes after boot; rows still
+    in cooldown are just reported as locked.
+  - Output goes to the journal (`journalctl --user -u shopee-boost`) with
+    no log redirection to set up.
+  - A user service gets the desktop session's environment, so the
+    `notify-send` alert in `check_session.py` can reach your desktop.
+
 
 1. uv venv
 Creates a virtual environment in .venv/ in the current folder. It uses whatever Python it finds, or you can choose one:
