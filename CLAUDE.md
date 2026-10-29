@@ -21,6 +21,7 @@ No test suite, linter, or build step exists in this repo.
 
 - `auto_login.py` — the entire application. Flow: `main()` tries a headless run with the saved session (`storage_state.json`) first; if that's invalid/missing it falls back to a headed `do_login()` that pauses on a TTY for a human to clear CAPTCHA/OTP/2FA, then saves a fresh `storage_state.json`. Either path ends by calling `boost_all()`, which paginates the product list and calls `boost_row()` per row.
 - `.env` — `email` / `password` credentials, loaded by the hand-rolled `load_env()` (no `python-dotenv` dependency).
+- `systemd/` — user unit templates (`@REPO@` placeholder) for the boost timer (every 4h5m) and the daily `check_session.py` timer; `systemd/install.sh` renders them into `~/.config/systemd/user/` and enables them.
 - `storage_state.json` — Playwright storage state (cookies/session) persisted between runs so login can be skipped when still valid.
 - Login detection (`is_logged_in`) checks the URL host (`accounts.shopee.tw`) rather than doing a substring match on "login", because the post-login redirect URL itself contains `is_from_login=true` and would false-positive.
 - Boost slots are a limited, account-wide quota: once exhausted, Shopee replaces a row's boost menu item with a live countdown instead of leaving it clickable. `boost_row()` returns one of `"boosted"`, `"failed"`, `"locked"`, or `"no_option"` and only acts on rows where the boost option is actually present.

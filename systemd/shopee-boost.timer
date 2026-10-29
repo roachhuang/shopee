@@ -1,0 +1,9 @@
+[Unit]
+Description=Run shopee-boost.service every 4h5m
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=4h5m
+
+[Install]
+WantedBy=timers.target

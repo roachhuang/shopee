@@ -53,5 +53,27 @@ normally for another ~7 days.
 ### Files involved
 
 - `check_session.py` — the daily headless validity check
-- `~/.config/systemd/user/shopee-session-check.service` / `.timer` — runs it daily
-- `~/.config/systemd/user/shopee-boost.service` / `.timer` — the existing boost job (every 4h5m)
+- `systemd/shopee-session-check.service` / `.timer` — runs it daily
+- `systemd/shopee-boost.service` / `.timer` — the boost job (every 4h5m)
+
+## Setup on a new machine
+
+`.env` and `storage_state.json` are gitignored, so they have to be recreated:
+
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+git clone https://github.com/roachhuang/shopee ~/projects/shopee
+cd ~/projects/shopee
+uv sync
+uv run playwright install --with-deps chromium
+printf 'email=...\npassword=...\n' > .env   # fill in real credentials
+uv run python auto_login.py                 # headed: clear CAPTCHA/OTP by hand
+systemd/install.sh                          # install + start both timers
+```
+
+`install.sh` renders the unit templates in `systemd/` (replacing `@REPO@`
+with this checkout's path) into `~/.config/systemd/user/` and enables the
+timers. Re-run it if the repo moves.
+
+User timers only run while you're logged in. To keep boosting after logout
+or before login following a reboot, run `loginctl enable-linger "$USER"`.

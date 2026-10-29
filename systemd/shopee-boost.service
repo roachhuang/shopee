@@ -1,0 +1,9 @@
+[Unit]
+Description=Boost Shopee TW listings (auto_login.py)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO@
+ExecStart=@REPO@/.venv/bin/python @REPO@/auto_login.py

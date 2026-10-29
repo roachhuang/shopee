@@ -1,0 +1,9 @@
+[Unit]
+Description=Check whether the saved Shopee session is still valid
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO@
+ExecStart=@REPO@/.venv/bin/python @REPO@/check_session.py
